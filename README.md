@@ -6,17 +6,17 @@ A beginner-first, browser-based study guide for Computer Organization and Archit
 
 The guide is organized into eleven sections:
 
-1. Course orientation and computer types
-2. Basic structure and performance
-3. Instructions, formats, and assembly basics
-4. Addressing modes and assembly programming
-5. I/O organization and data transfer
-6. Memory systems and cache hierarchy
-7. Computer arithmetic
-8. The basic processing unit and control
-9. Pipelining
-10. Instruction-level and data-level parallelism
-11. Formula sheet and final revision
+1. Basic structure of computers
+2. Functional units, buses, and performance
+3. Number representation and machine instructions
+4. Addressing modes and assembly programs
+5. Input-Output organization
+6. Memory system and cache mapping
+7. Arithmetic: adders, multiplication, and division
+8. Processor datapath and control units
+9. Pipelining and pipeline hazards
+10. Parallel processors: Flynn's classification, superscalar, vector, multicore, and GPU
+11. Formula sheet and final revision (extra review)
 
 ## Open the guide
 
