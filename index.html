@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A beginner-first Computer Organization and Architecture study guide." />
+    <title>COA Atlas | End-Term Study Guide</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Course navigation">
+        <div class="brand"><span class="brand-mark">C</span><div><strong>COA Atlas</strong><small>End-term study guide</small></div></div>
+        <div class="course-meter"><span id="progressText">0 of 9 studied</span><div class="meter"><i id="progressBar"></i></div></div>
+        <nav id="topicNav" class="topic-nav"></nav>
+        <div class="sidebar-foot"><button id="resetProgress" class="text-button">Reset progress</button><p>Built from your COA course pack</p></div>
+      </aside>
+      <main class="main">
+        <header class="topbar"><button class="menu-button" id="menuButton" aria-label="Open course menu">☰</button><label class="search"><span>⌕</span><input id="searchInput" placeholder="Search a concept, formula, or instruction..." /></label><button id="formulaButton" class="quick-button">Formula sheet</button></header>
+        <section id="hero" class="hero"></section>
+        <section id="content" class="content" aria-live="polite"></section>
+      </main>
+    </div>
+    <template id="emptyTemplate"><div class="empty"><h2>No matching topic</h2><p>Try a different search term.</p></div></template>
+    <script src="app.js"></script>
+  </body>
+</html>
