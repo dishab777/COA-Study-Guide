@@ -4,7 +4,7 @@ A beginner-first, browser-based study guide for Computer Organization and Archit
 
 ## Topics
 
-The guide is organized into ten sections:
+The guide is organized into eleven sections:
 
 1. Course orientation and computer types
 2. Basic structure and performance
@@ -15,7 +15,8 @@ The guide is organized into ten sections:
 7. Computer arithmetic
 8. The basic processing unit and control
 9. Pipelining
-10. Formula sheet and final revision
+10. Instruction-level and data-level parallelism
+11. Formula sheet and final revision
 
 ## Open the guide
 
