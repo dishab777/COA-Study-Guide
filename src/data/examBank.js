@@ -223,6 +223,13 @@ export const tutorialSets = [
     coverage: 'Nested array sums, dot products and memory accesses, effective-address modes, array loops, instruction fields, and shifts.',
   },
   {
+    id: 'tutorial-assembly',
+    title: 'Tutorial · Assembly code and machine-level tracing',
+    sourceId: 'assembly-tutorial',
+    locator: 'DOCX paragraphs 2-54',
+    coverage: 'Short-circuit conditions, loops, endian byte selection, instruction-field widths, shifts/rotates, and array copying. The sheet includes one worked field-width answer, not a complete solution key.',
+  },
+  {
     id: 'tutorial-5',
     title: 'Tutorial 5 · Cache memory',
     sourceId: 'tutorial-5',

@@ -25,7 +25,7 @@ Create a production build with `npm run build`; preview it with `npm run preview
 
 ## Content and evidence policy
 
-The source manifest registers the Course Handout 2026, the week 3/4/9/10/11/12 slide groups, and the additional PowerPoint, PDF, tutorial, formula, and practice materials supplied with the course. Text was extracted locally from the decks; image-based slides were OCR-processed locally. Topic evidence includes page, slide, or document-paragraph locators where verified. Lessons without authored content remain explicitly marked pending.
+The source manifest registers the Course Handout 2026, the week 3/4/9/10/11/12 slide groups, and the additional lecture-unit PDFs, PowerPoint, PDF, tutorial, formula, and practice materials supplied with the course. Text was extracted locally from the documents; image-based references were treated as scans where applicable. All 46 syllabus topics now have authored lessons, with page, slide, or paragraph locators where verified. Examples in the lessons are teaching examples, not claims about past exam content.
 
 The question bank indexes eight distinct examination sets and 95 question entries. Question summaries are paraphrased and retain source question numbers, marks, and page/paragraph locators; consult the cited original for exact wording and figures. A byte-identical December 2025 paper copy is excluded. Unmatched solution documents and source-answer assumptions are flagged rather than silently treated as authoritative. No question-frequency or exam-priority statistics are inferred.
 
