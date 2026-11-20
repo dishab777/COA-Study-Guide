@@ -8,6 +8,7 @@ import ProgressBar from './ProgressBar.jsx';
 import LessonContent from './LessonContent.jsx';
 import { chapters, allTopics } from '../data/syllabus.js';
 import { formulaBook, lessonLibrary, practiceProblems, quizBank } from '../data/lessons.js';
+import { examPapers, tutorialSets, unmatchedExamSources } from '../data/examBank.js';
 import { getTopicEvidence, sources, unavailableSources } from '../data/sourceManifest.js';
 
 const priorityClass = (priority) => priority.toLowerCase().replace(/\s+/g, '-');
@@ -62,7 +63,7 @@ export function Dashboard({ progress, practiceState, quizScores, studyStreak, on
       </section>
       <div className="section-title-row"><div><div className="eyebrow">COURSE MAP</div><h2>Seven chapters</h2></div><span className="priority-disclaimer">Priority reflects syllabus focus, not measured past-paper frequency.</span></div>
       <section className="chapter-grid">{chapters.map((chapter) => <ChapterCard key={chapter.id} chapter={chapter} progress={progress} onNavigate={onNavigate} />)}</section>
-      <section className="callout-row"><div className="callout-icon"><FileQuestion size={20} /></div><div><strong>Past-paper evidence is not loaded yet</strong><p>The 2024–2025 examination papers and marking schemes were not included with the available source files. This platform will not invent past-paper questions or frequency statistics.</p></div><button className="text-link" onClick={() => onNavigate('exams')}>Check sources <ChevronRight size={15} /></button></section>
+      <section className="callout-row"><div className="callout-icon"><FileQuestion size={20} /></div><div><strong>{examPapers.length} supplied exam-paper sets are indexed</strong><p>Question summaries link back to the supplied paper pages. Unmatched solutions and missing marking schemes are flagged; no frequency-based exam priorities are inferred.</p></div><button className="text-link" onClick={() => onNavigate('exams')}>Open question bank <ChevronRight size={15} /></button></section>
     </div>
   );
 }
@@ -154,7 +155,7 @@ export function TopicPage({ topic, progress, onProgress, bookmarked, onBookmark,
       <section className="subtopic-panel"><div className="section-title-row"><div><div className="eyebrow">LEARNING OBJECTIVES</div><h2>Topics in this lesson</h2></div><span className={`source-status ${evidence.sourceStatus}`}>{evidence.sourceStatus === 'slides-available' ? 'Slide source available' : 'Handout-only source'}</span></div><ul className="objective-list">{topic.subtopics.map((item) => <li key={item}><Check size={15} />{item}</li>)}</ul></section>
       <LessonContent topic={topic} lesson={lesson} evidence={evidence} sourceNames={sourceNamesFor(topic)} />
       {problem && <section className="inline-practice-link"><div><strong>Practice for this topic</strong><p>{problem.title} · {problem.type}</p></div><button className="button button-primary" onClick={() => onNavigate('numerical', topic.id)}>Open problem <ArrowRight size={15} /></button></section>}
-      <section className="source-card"><div className="source-card-icon"><FileQuestion size={18} /></div><div><strong>Evidence and provenance</strong><p>{evidence.locator}</p><p>Sources: {sourceNamesFor(topic).join(', ') || 'Course Handout 2026'}. Source page/slide locators are not asserted until individually verified.</p></div></section>
+      <section className="source-card"><div className="source-card-icon"><FileQuestion size={18} /></div><div><strong>Evidence and provenance</strong><p>{evidence.locator}</p><p>Sources: {sourceNamesFor(topic).join(', ') || 'Course Handout 2026'}. The references are locators, not a claim that the source files are embedded in this site.</p></div></section>
       {lesson && <div className="inline-copy-list"><span>Copy formula:</span>{lesson.formulas.slice(0, 2).map((formula) => <button className="text-link" key={formula} data-copy={formula} onClick={onCopy}>{formula} <Download size={13} /></button>)}</div>}
       <div className="bottom-navigation"><button className="text-link" onClick={() => onNavigate(chapter.id)}><ArrowLeft size={15} />Back to chapter topics</button><button className="text-link" onClick={() => onNavigate('tests', chapter.id)}>Chapter test <ArrowRight size={15} /></button></div>
     </div>
@@ -168,7 +169,7 @@ export function NumericalPractice({ practiceState, onAttempt, initialTopic }) {
   const types = [...new Set(practiceProblems.map((problem) => problem.type))];
   return (
     <div className="page-stack">
-      <header className="page-heading"><div><div className="eyebrow">PRACTICE WORKBENCH</div><h1>Numerical practice</h1><p>Generated teaching exercises are clearly separated from actual past-paper questions. Try each problem before revealing the worked steps.</p></div></header>
+      <header className="page-heading"><div><div className="eyebrow">PRACTICE WORKBENCH</div><h1>Numerical practice</h1><p>Generated and tutorial-derived exercises are labeled separately from actual past-paper questions. Try each problem before revealing the worked steps.</p></div></header>
       <div className="filter-row"><label><Filter size={15} />Chapter<select value={chapterFilter} onChange={(event) => setChapterFilter(event.target.value)}><option value="all">All chapters</option>{chapters.map((chapter) => <option value={chapter.id} key={chapter.id}>Chapter {chapter.number}: {chapter.title}</option>)}</select></label><label>Problem type<select value={typeFilter} onChange={(event) => setTypeFilter(event.target.value)}><option value="all">All types</option>{types.map((type) => <option key={type}>{type}</option>)}</select></label></div>
       {filtered.map((problem, index) => <PracticeCard key={problem.id} problem={problem} index={index} state={practiceState[problem.id] || {}} onAttempt={onAttempt} />)}
       {!filtered.length && <div className="empty-state">No exercises match those filters yet.</div>}
@@ -186,7 +187,7 @@ function PracticeCard({ problem, index, state, onAttempt }) {
   };
   return (
     <article className="practice-card">
-      <div className="practice-card-heading"><span className="chapter-number">PROBLEM {String(index + 1).padStart(2, '0')}</span><span className="small-chip">{problem.type}</span><span className="generated-label">Generated practice</span></div>
+      <div className="practice-card-heading"><span className="chapter-number">PROBLEM {String(index + 1).padStart(2, '0')}</span><span className="small-chip">{problem.type}</span><span className="generated-label">{problem.practiceKind || 'Generated practice'}</span></div>
       <h2>{problem.title}</h2><p>{problem.prompt}</p>
       <div className="answer-input-row"><label htmlFor={`answer-${problem.id}`}>Your answer <small>Enter the requested numbers in order; units optional.</small></label><input id={`answer-${problem.id}`} type="text" inputMode="decimal" value={state.input || ''} onChange={(event) => attempt({ input: event.target.value, checked: false })} placeholder="Try it before opening the solution" /><button className="button button-primary" onClick={checkAnswer}>Check answer</button></div>
       {state.checked && <div className={`answer-feedback ${state.correct ? 'correct' : 'incorrect'}`} role="status">{state.correct ? 'Correct — well done.' : 'Not quite. Recheck the method or open a hint.'}</div>}
@@ -227,11 +228,55 @@ function TraceTable({ headers, rows }) {
 }
 
 export function ExamBank() {
+  const [sessionFilter, setSessionFilter] = useState('all');
+  const [chapterFilter, setChapterFilter] = useState('all');
+  const questionCount = examPapers.reduce((count, paper) => count + paper.questions.length, 0);
+  const linkedSolutionCount = examPapers.filter((paper) => paper.solutionSourceId).length;
+  const visiblePapers = examPapers.filter((paper) => {
+    const matchesSession = sessionFilter === 'all' || paper.id === sessionFilter;
+    const allowedTopics = chapterFilter === 'all'
+      ? null
+      : allTopics.filter((topic) => topic.chapterId === chapterFilter).map((topic) => topic.id);
+    const matchesChapter = !allowedTopics || paper.questions.some((question) => question.topicIds.some((id) => allowedTopics.includes(id)));
+    return matchesSession && matchesChapter;
+  });
+
   return (
     <div className="page-stack">
-      <header className="page-heading"><div><div className="eyebrow">VERIFIED QUESTIONS ONLY</div><h1>Previous-year question bank</h1><p>Question frequency and marks will be summarized only after the actual paper files are supplied and duplicates are identified.</p></div></header>
-      <section className="missing-paper-panel"><div className="pending-icon"><FileQuestion size={20} /></div><div><h2>No examination papers are available in the workspace</h2><p>This page intentionally contains no invented past questions, session counts, marks, or paper-frequency priorities. Upload the listed papers to create a traceable question bank with solutions.</p><div className="missing-paper-grid">{unavailableSources.filter((name) => name.includes('MTE') || name.includes('ETE') || name.includes('makeup')).map((name) => <span className="missing-paper" key={name}><Clock3 size={14} />{name}</span>)}</div></div></section>
-      <section className="syllabus-chapter"><h2>Question record schema</h2><p>Each imported question will track chapter, topic, distinct exam session, marks, question type, difficulty, frequency across unique papers, solution, and source page. Priority labels will distinguish observed frequency from syllabus-based estimates.</p><div className="schema-chips">{['Source filename + page', 'Distinct paper session', 'Exact question text', 'Marks + type', 'Solution + marking points', 'Duplicate fingerprint'].map((item) => <span className="small-chip" key={item}>{item}</span>)}</div></section>
+      <header className="page-heading"><div><div className="eyebrow">SOURCE-TRACEABLE QUESTION INDEX</div><h1>Previous-year question bank</h1><p>{examPapers.length} distinct paper sets and {questionCount} question entries are indexed. Prompt descriptions are concise paraphrases; consult the cited source for exact wording, diagrams, and tables.</p></div></header>
+      <section className="stats-grid">
+        <StatCard label="Distinct paper sets" value={examPapers.length} note="Duplicates excluded" Icon={FileQuestion} />
+        <StatCard label="Question entries" value={questionCount} note="With marks and page/paragraph locators" Icon={ClipboardCheck} />
+        <StatCard label="Sets with solutions" value={linkedSolutionCount} note="Availability is not the same as a complete official rubric" Icon={CheckCircle2} />
+      </section>
+      <div className="filter-row">
+        <label>Exam session<select value={sessionFilter} onChange={(event) => setSessionFilter(event.target.value)}><option value="all">All supplied sessions</option>{examPapers.map((paper) => <option value={paper.id} key={paper.id}>{paper.session}</option>)}</select></label>
+        <label>Chapter<select value={chapterFilter} onChange={(event) => setChapterFilter(event.target.value)}><option value="all">All chapters</option>{chapters.map((chapter) => <option value={chapter.id} key={chapter.id}>Chapter {chapter.number}: {chapter.title}</option>)}</select></label>
+      </div>
+      {visiblePapers.map((paper) => {
+        const paperSource = sources.find((source) => source.id === paper.paperSourceId);
+        const solutionSource = paper.solutionSourceId ? sources.find((source) => source.id === paper.solutionSourceId) : null;
+        const allowedTopics = chapterFilter === 'all'
+          ? null
+          : allTopics.filter((topic) => topic.chapterId === chapterFilter).map((topic) => topic.id);
+        const visibleQuestions = paper.questions.filter((question) => !allowedTopics || question.topicIds.some((id) => allowedTopics.includes(id)));
+        return <details className="syllabus-chapter exam-paper-details" key={paper.id} open={sessionFilter !== 'all'}>
+          <summary className="section-title-row exam-paper-summary"><div><div className="eyebrow">{paper.totalMarks} MARKS · {paper.questions.length} QUESTIONS</div><h2>{paper.session}</h2></div><span className={`source-status ${paper.markingScheme === 'included' ? 'slides-available' : 'handout-only'}`}>{paper.markingScheme} marking scheme</span></summary>
+          <p className="source-label">Question source: {paperSource?.filename} · Solution: {solutionSource ? `${solutionSource.filename} (${paper.solutionLocator})` : 'No matched solution supplied'}.</p>
+          {paper.note && <p className="source-label">{paper.note}</p>}
+          <div className="exam-question-list">{visibleQuestions.map((question) => <article className="quiz-card exam-question-card" key={`${paper.id}-${question.number}`}>
+            <div className="practice-card-heading"><span className="chapter-number">{question.number}</span><span className="small-chip">{question.marks} marks · {question.locator}</span></div>
+            <h2>{question.summary}</h2>
+            <p className="source-label">Topic: {question.topicIds.map((id) => topicById(id)?.title || id).join(' · ')} · Source: {paperSource?.filename}, {question.locator}.</p>
+          </article>)}</div>
+        </details>;
+      })}
+      {!visiblePapers.length && <div className="empty-state">No supplied questions match those filters.</div>}
+      <section className="syllabus-chapter"><h2>Supplied tutorials and assignments</h2><p>These are course exercises, not past examination questions. Selected tutorial problems with checked workings are also available under Numerical practice.</p><div className="source-registry">{tutorialSets.map((set) => {
+        const source = sources.find((item) => item.id === set.sourceId);
+        return <div className="source-registry-row" key={set.id}><span className="status-dot status-ready" /><div><strong>{set.title}</strong><small>{set.coverage} Source: {source?.filename}, {set.locator}.</small></div><span className="source-status slides-available">Supplied</span></div>;
+      })}</div></section>
+      <section className="missing-paper-panel"><div className="pending-icon"><Clock3 size={20} /></div><div><h2>Source reconciliation and remaining gaps</h2><p>{unavailableSources.join('; ')}.</p>{unmatchedExamSources.map((item) => <p className="source-label" key={item.sourceId}>{sources.find((source) => source.id === item.sourceId)?.filename}: {item.note}</p>)}</div></section>
     </div>
   );
 }
@@ -250,7 +295,7 @@ export function ChapterTests({ quizScores, onSaveScore, initialChapter }) {
       <div className="filter-row"><label>Chapter<select value={chapterId} onChange={(event) => { setChapterId(event.target.value); setSubmitted(false); setAnswers({}); }} aria-label="Select test chapter">{chapters.map((item) => <option value={item.id} key={item.id}>Chapter {item.number}: {item.title}</option>)}</select></label>{quizScores[chapterId] && <span className="muted-text">Best attempt: {quizScores[chapterId].best}%</span>}</div>
       <section className="test-intro"><ClipboardCheck size={20} /><div><strong>Chapter {chapter?.number}: {chapter?.title}</strong><p>{questions.length} question{questions.length === 1 ? '' : 's'} · Choose an answer, submit, then review explanations.</p></div></section>
       {questions.map((question, index) => <article className="quiz-card" key={question.id}><span className="chapter-number">QUESTION {index + 1}</span><h2>{question.prompt}</h2><div className="quiz-options">{question.options.map((option, optionIndex) => <label className={submitted && optionIndex === question.answer ? 'correct-option' : ''} key={option}><input type="radio" name={question.id} checked={answers[question.id] === optionIndex} onChange={() => { setAnswers({ ...answers, [question.id]: optionIndex }); setSubmitted(false); }} />{option}</label>)}</div>{submitted && <p className={`quiz-explanation ${answers[question.id] === question.answer ? 'correct-text' : 'incorrect-text'}`}><strong>{answers[question.id] === question.answer ? 'Correct.' : 'Review:'}</strong> {question.explanation}</p>}</article>)}
-      {!submitted ? <button className="button button-primary" onClick={submit} disabled={questions.some((question) => answers[question.id] === undefined)}>Submit test</button> : <div className={`test-result ${score >= 80 ? 'pass' : 'retry'}`} role="status"><Award size={20} /><div><strong>Score: {score}%</strong><p>{score >= 80 ? 'Checkpoint met. Past-paper readiness remains unverified until actual papers are available.' : 'Review the explanations, then try again.'}</p></div><button className="button button-secondary" onClick={() => { setSubmitted(false); setAnswers({}); }}>Retake test</button></div>}
+      {!submitted ? <button className="button button-primary" onClick={submit} disabled={questions.some((question) => answers[question.id] === undefined)}>Submit test</button> : <div className={`test-result ${score >= 80 ? 'pass' : 'retry'}`} role="status"><Award size={20} /><div><strong>Score: {score}%</strong><p>{score >= 80 ? 'Checkpoint met. Past-paper questions are indexed separately; this generated quiz score does not measure that practice.' : 'Review the explanations, then try again.'}</p></div><button className="button button-secondary" onClick={() => { setSubmitted(false); setAnswers({}); }}>Retake test</button></div>}
       <p className="source-label">Question provenance: generated study check, not an actual examination question.</p>
     </div>
   );
