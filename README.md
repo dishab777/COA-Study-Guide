@@ -1,39 +1,35 @@
 # COA Atlas
 
-A beginner-first, browser-based study guide for Computer Organization and Architecture (COA). It combines plain-language explanations, worked examples, assembly snippets, exam notes, and revision formulas in one responsive interface.
+COA Atlas is a local-first Computer Organization and Architecture study platform aligned to the **Course Handout 2026** lecture sequence. The current platform uses seven chapters, a source-tracked syllabus, guided lessons, numerical practice, a hand-trace assembly lab, formula reference, formative chapter checks, and browser-local progress.
 
-## Topics
+## Run locally
 
-The guide is organized into eleven sections:
+Requirements: Node.js 20.19+ or 22.12+.
 
-1. Basic structure of computers
-2. Functional units, buses, and performance
-3. Number representation and machine instructions
-4. Addressing modes and assembly programs
-5. Input-Output organization
-6. Memory system and cache mapping
-7. Arithmetic: adders, multiplication, and division
-8. Processor datapath and control units
-9. Pipelining and pipeline hazards
-10. Parallel processors: Flynn's classification, superscalar, vector, multicore, and GPU
-11. Formula sheet and final revision (extra review)
+```powershell
+npm install
+npm run dev
+```
 
-## Open the guide
+Create a production build with `npm run build`; preview it with `npm run preview`.
 
-No installation, build step, or server is required. Open `index.html` in a modern web browser.
+## Platform structure
 
-## Using the guide
+- `src/data/syllabus.js` — the seven chapters, handout lecture sequence, topics, and subtopics.
+- `src/data/sourceManifest.js` — available source records, per-topic evidence mapping, and unavailable materials.
+- `src/data/lessons.js` — structured lesson content, generated numerical exercises, formulas, and chapter checks.
+- `src/components/` — reusable navigation, lesson rendering, and study pages.
+- `src/App.jsx` — hash-based navigation, search, progress persistence, bookmarks, theme, source registration, and backup.
+- `legacy.html`, `app.js`, and `styles.css` — the pre-existing eleven-section notes archive retained during the platform transition.
 
-- Choose a section from the course navigation.
-- Search for a concept, formula, or instruction to jump to a matching section.
-- Select **Formula sheet** for a quick revision reference.
-- Mark sections as studied when you can explain them without your notes. Your active section and study checklist are saved in your browser's local storage.
-- On smaller screens, use the menu button to open the course navigation.
+## Content and evidence policy
 
-The page uses Google Fonts when an internet connection is available and falls back to system fonts otherwise.
+The supplied handout and six extracted slide-deck groups (weeks 3, 4, 9, 10, 11, and 12) are registered in the source manifest. Several topics have a handout outline but do not yet have detailed source-verified lessons; those are explicitly marked pending and cannot be marked as studied. Generated practice and quiz items are labeled as generated, not past-paper questions.
 
-## Project files
+The 2024–2025 examination papers, tutorials, solutions, marking schemes, and question bank are not currently present in the workspace. The past-paper page therefore reports them as unavailable and does not invent questions, frequencies, marks, or exam-priority statistics. Registering a file in Settings stores its filename and metadata locally; it does not upload, extract, or verify its contents.
 
-- `index.html` — page structure and interface elements
-- `styles.css` — layout, colors, and responsive styling
-- `app.js` — course content, navigation, search, and saved study progress
+The seven-chapter structure and lecture ordering follow the supplied prompt and Course Handout 2026. Syllabus-focus labels are not estimates of a future marks distribution.
+
+## Local data
+
+Study progress, practice state, quiz results, bookmarks, appearance settings, and registered source-file metadata are stored in browser `localStorage`. Use Settings to export a progress backup. Data is specific to the browser and device.
